@@ -1,5 +1,6 @@
-module.exports = function(Sequelize, sequelize ){
-    let userMaster = sequelize.define('user_master',{
+const bcrypt = require('bcryptjs')
+module.exports = function (Sequelize, sequelize) {
+    let userMaster = sequelize.define('user_master', {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -23,7 +24,12 @@ module.exports = function(Sequelize, sequelize ){
         },
         password: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: false,
+            set(value) {
+                let salt = bcrypt.getSalt(10)
+                this.setDataValue('password', bcrypt.hash(value, salt))
+
+            }
         },
         phone: {
             type: Sequelize.STRING,
